@@ -1,0 +1,18 @@
+Directly upload images to Fb without using graph api which requires permissions.
+This simulates a browser and uploads the pic to the users album.
+
+I have implemented a bulk image uploader using the bypasser.
+Check out the mob.py if you just require the bypass library.
+
+Test the uploader by using the xml's which has the username and password defined as per the demo xml.
+The location of the image file also needs to be defined in the xml
+file -> caption.txt
+Contains the message to post along with the image.
+
+file -> images/settings.ini
+Contains the location of the xmls and the loop frequency with which it should check the folder for a new xml file.
+
+If everthing is good to go then -> 
+python looper.py
+
+A taskbar icon should appear.
