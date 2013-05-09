@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Parent>
-<Picture filename="/home/xadmin/Desktop/tweet.jpg" />
-<Facebook login="xxxxx@gmail.com" password="xxxxx" sendPicture="true" logout="false" />
-  </Parent>
