@@ -1,0 +1,1 @@
+pyinstaller.py -p support -F -i Icon.ico -w dm-bot

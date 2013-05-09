@@ -1,0 +1,14 @@
+This uses threads to send DM's to multiple users defined in usersdb.
+Uses Twitter Streaming Api to get notified of the monitered member's tweet immediately unlike the old poling api which isnt possible in real time.
+
+Set the variables in config.ini
+and run it ->
+
+./dmbot
+
+if need be then compile the python into an executable 
+
+./install
+
+The executable is made in dist folder
+

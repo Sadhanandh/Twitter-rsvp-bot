@@ -1,0 +1,155 @@
+#! /usr/bin/env python
+# Python code
+# 
+#
+import sys
+import os
+os.chdir(os.path.dirname(sys.argv[0]))
+sys.path.append(os.path.abspath(os.path.join(".","support")))
+import support.tweetstream as tweetstream
+import support.jsonstrip as jsonstrip
+import re
+import getpass
+import base64
+import subprocess
+import webbrowser
+import support.supra as supra
+
+
+user_n = "nokia"
+user_st = "nokia"
+words_n = "nokia"
+settingsfile = "config.ini"
+passwd = "passwd"
+
+
+
+
+
+
+def runme(user_n,user_st,words_n,my_user_n,my_pass,cust_w,additional_w):
+	print "Following.. - ",user_st
+	print "Target - ",words_n
+	print "Username - ",my_user_n
+	print "Password - ","xxxxx"
+	people = []
+	mytext = ""
+	people.extend(user_n)
+
+	papi = supra.makeapis()
+
+	print "Listening........"
+	while True:
+		with tweetstream.FilterStream(my_user_n, my_pass,follow=people) as stream:
+			for tweet in stream:
+				try :
+					data = tweet["text"]
+					to_dm = tweet["user"]["screen_name"]
+					print "@"+to_dm + " :",
+					print data
+					if  str(tweet["user"]["id"]) in people:
+						found = re.findall(".*?("+words_n+").*",data,re.I)
+						if len(found)!=0:
+							links = re.findall(".*?("+cust_w+")",data,re.I)
+							if len(links)!=0:
+								links1 = re.findall(".*?("+additional_w+")",data,re.I)
+								if len(links1)!=0:
+									allhashes = re.findall(".*?(#\S*)",data,re.I)
+									strin=""
+									for words in allhashes:
+										if words!=cust_w:
+											strin= strin + words +" "
+
+									links = re.findall(".*?(http:\/\/\S+).*?",data,re.I)
+									if len(links)!=0:
+										if os.path.isfile("alarm.mp3"):
+											subprocess.call(("open","alarm.mp3"))
+										for link in links:
+											print link
+											#subprocess.call(("open",link))
+											webbrowser.open(link)
+									strin = raw_input("Please enter the #tag .. : ")
+									strin +=" "
+									my__text = strin+mytext
+
+									print "Sending...."
+									supra.procedure(papi,my__text,to_dm)
+
+
+				except KeyError as e:
+					print " ",e
+				except Exception as e:
+					print " ",e 
+
+if __name__ == "__main__":
+
+
+	if os.path.exists(settingsfile):
+		fr = open(settingsfile)
+		data = fr.read()
+		ma = re.findall("My\s*User\s*Name\s*:\s*(\S*)",data,re.IGNORECASE)
+		if ma != []:
+			my_user_n = ma[0]
+		ma = re.findall("Follow\s*Name\s*:\s*(.*)",data,re.IGNORECASE)
+		if ma != []:
+			user_t = ma[0]
+			user_t = user_t.split()
+			user_n =[]
+			user_st =[]
+			for x in user_t:
+				x = x.strip("@")
+				y=jsonstrip.extract(x)
+				if y!=None:
+					user_n.append(y)
+					user_st.append(x)
+				
+		ma = re.findall("Word\s*:\s*(\S+.*)",data,re.IGNORECASE)
+		if ma != []:
+			words_n = ma[0]
+		ma = re.findall("Trigger\s*:\s*(\S+.*)",data,re.IGNORECASE)
+		if ma != []:
+			cust_w = ma[0]
+		ma = re.findall("Extra\s*Trigger\s*:\s*(.*)",data,re.IGNORECASE)
+		if ma != []:
+			additional_w = ma[0]
+		fr.close()
+		if os.path.isfile(passwd):
+			fr = open(passwd)
+			my_pass = fr.read()
+			my_pass = base64.b64decode(my_pass)
+			fr.close()
+		else:
+			my_pass = getpass.getpass()
+			w_pass = base64.b64encode(my_pass)
+			fr = open(passwd,"w")
+			fr.write(w_pass)
+			fr.close()
+
+
+		context = '''
+_   _ _ _          _____ _             _           
+| \ | (_) |        /  ___| |           | |          
+|  \| |_| | _____  \ `--.| |_ ___  __ _| | ___ _ __ 
+| . ` | | |/ / _ \  `--. \ __/ _ \/ _` | |/ _ \ '__|
+| |\  | |   <  __/ /\__/ / ||  __/ (_| | |  __/ |   
+\_| \_/_|_|\_\___| \____/ \__\___|\__,_|_|\___|_|   
+
+'''                                                 
+		rsvp = '''
+_____   ____ __  _______ 
+| () ) (_ (_`\ \/ /| ()_)
+|_|\_\.__)__) \__/ |_|   
+
+'''
+		print context
+		print rsvp
+		print "nikestealer@gmail.com"
+		print ""
+		print "The Fastest RSVP Twitter Bot "
+		print ""
+		res = True
+		if res==True:
+			if supra.checkauth():
+				runme(user_n,user_st,words_n,my_user_n,my_pass,cust_w,additional_w)
+
+	
